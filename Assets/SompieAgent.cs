@@ -5,10 +5,12 @@ using UnityEngine.AI;
 
 public class SompieAgent : MonoBehaviour
 {
+    HealthManager healthManager;
+
     Transform eyes;
     Transform player;
     [SerializeField]
-    float sightDistance;
+    float radius;
     public float followTimerAmount;
     float followTimer;
     NavMeshAgent agent;
@@ -17,11 +19,13 @@ public class SompieAgent : MonoBehaviour
     [SerializeField]
     bool seePlayer;
     bool followPlayer;
+    bool isDead;
 
     Vector3 SompieVelocity;
     // Start is called before the first frame update
     void Start()
     {
+        healthManager = GetComponent<HealthManager>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         eyes = transform.Find("Eyes");
         agent = GetComponent<NavMeshAgent>();
@@ -30,32 +34,53 @@ public class SompieAgent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SompieVelocity = agent.velocity;
-        RaycastHit hit;
-
-        seePlayer = Physics.Raycast(eyes.position, eyes.forward, sightDistance, playerMask);
-
-        Debug.DrawRay(eyes.position, eyes.forward * sightDistance, Color.green);
-
-        if (seePlayer)
+        if (isDead)
         {
-            followPlayer = true;
-            followTimer = followTimerAmount;
-            agent.SetDestination(player.position);
+            agent.enabled = false;
+        }
+        if (!isDead)
+        {
+            isDead = healthManager.isDead;
+            SompieVelocity = agent.velocity;
+
+            if (Physics.CheckSphere(transform.position, radius, playerMask))
+            {
+                seePlayer = true;
+            }
+            else
+            {
+                seePlayer = false;
+            }
+
+
+
+            if (seePlayer)
+            {
+                followPlayer = true;
+                followTimer = followTimerAmount;
+                agent.SetDestination(player.position);
+            }
+
+            if (followPlayer && !seePlayer)
+            {
+                if (followTimer > 0)
+                {
+                    followTimer -= Time.deltaTime;
+                }
+                else if (followTimer <= 0)
+                {
+                    followPlayer = false;
+                }
+                agent.SetDestination(player.position);
+            }
         }
 
-        if(followPlayer && !seePlayer)
-        {
-            if(followTimer > 0)
-            {
-                followTimer -= Time.deltaTime;
-            }
-            else if(followTimer <= 0)
-            {
-                followPlayer = false;
-            }
-            agent.SetDestination(player.position);
-        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(transform.position, radius);
     }
 
 }

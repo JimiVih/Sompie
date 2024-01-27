@@ -12,7 +12,7 @@ public class Shooting : MonoBehaviour
     float coolTimer;
 
     public float rayDistance;
-
+    public float damage;
     
     // Start is called before the first frame update
     void Start()
@@ -37,6 +37,13 @@ public class Shooting : MonoBehaviour
             }
         }
 
+
+
+    }
+
+    void WeaponCycle()
+    {
+        //weapons array
     }
 
     void Shoot()
@@ -47,6 +54,13 @@ public class Shooting : MonoBehaviour
         if (Physics.Raycast(rayOrigin, Camera.main.transform.forward, out hit, rayDistance))
         {
             Debug.Log(hit.transform.gameObject);
+            if(hit.transform.tag == "Enemy")
+            {
+                hit.transform.GetComponent<HealthManager>().DoDamage(damage);
+
+
+                print("Hit " + hit.transform.gameObject.name);
+            }
         }
     }
 
