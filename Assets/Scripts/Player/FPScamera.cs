@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class FPScamera : MonoBehaviour
 {
+    PlayerManager playerManager;
+
     [SerializeField]
 
     Camera _camera;
@@ -17,14 +20,27 @@ public class FPScamera : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        playerManager = GetComponentInParent<PlayerManager>();
         _camera = Camera.main;
-        Cursor.lockState = CursorLockMode.Locked;
+        if (!playerManager.pause)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+        }
+        else if (playerManager.pause)
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        controlAll();
+        if (!playerManager.pause)
+        {
+            controlAll();
+        }
+
     }
 
     void controlAll()

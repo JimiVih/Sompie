@@ -5,31 +5,38 @@ using UnityEngine;
 
 public class Shooting : MonoBehaviour
 {
-    public Transform shootPoint;
+    PlayerManager playerManager;
+
 
     public float coolDownTime;
     float coolTimer;
 
     public float rayDistance;
+
+    
     // Start is called before the first frame update
     void Start()
     {
-        
+        playerManager = GetComponent<PlayerManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(coolTimer > 0)
+        if (!playerManager.pause)
         {
-            coolTimer -= Time.deltaTime;
+            if (coolTimer > 0)
+            {
+                coolTimer -= Time.deltaTime;
+            }
+
+            if (coolTimer <= 0 && Input.GetMouseButtonDown(0))
+            {
+                coolTimer = coolDownTime;
+                Shoot();
+            }
         }
 
-        if(coolTimer <= 0 && Input.GetMouseButtonDown(0))
-        {
-            coolTimer = coolDownTime;
-            Shoot();
-        }
     }
 
     void Shoot()
