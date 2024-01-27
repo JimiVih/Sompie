@@ -6,6 +6,9 @@ using UnityEngine;
 public class FPScamera : MonoBehaviour
 {
     PlayerManager playerManager;
+    CharacterMovement charMove;
+    [SerializeField]
+    Animator animator;
 
     [SerializeField]
 
@@ -14,6 +17,7 @@ public class FPScamera : MonoBehaviour
     public Transform body;
 
     public float sensitivity;
+    float velocity;
     float xRotation = 0;
 
     
@@ -22,8 +26,8 @@ public class FPScamera : MonoBehaviour
     {
         playerManager = GetComponentInParent<PlayerManager>();
         _camera = Camera.main;
-
-
+        charMove = GetComponentInParent<CharacterMovement>();
+        Cursor.lockState = CursorLockMode.Locked;
         
     }
 
@@ -32,7 +36,9 @@ public class FPScamera : MonoBehaviour
     {
         if (!playerManager.pause)
         {
+            
             controlAll();
+            
         }
 
     }
@@ -40,6 +46,7 @@ public class FPScamera : MonoBehaviour
     void controlAll()
     {
         FollowMouse();
+        AnimationHandler();
     }
 
     void FollowMouse()
@@ -52,5 +59,12 @@ public class FPScamera : MonoBehaviour
 
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         body.Rotate(Vector3.up * mouseX);
+    }
+
+    void AnimationHandler()
+    {
+        float currentVelocity = charMove.moveVelocity.magnitude;
+        
+        animator.SetFloat("velocity", currentVelocity);
     }
 }

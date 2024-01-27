@@ -5,6 +5,7 @@ using UnityEngine;
 public class CharacterMovement : MonoBehaviour
 {
     CharacterController controller;
+    Animator animator;
 
     public Transform groundCheck;
     public float checkRadius;
@@ -21,18 +22,20 @@ public class CharacterMovement : MonoBehaviour
 
     public LayerMask whatIsGround;
 
-    Vector3 moveVelocity;
+    public Vector3 moveVelocity;
     Vector3 fallVelocity;
 
     // Start is called before the first frame update
     void Start()
     {
         controller = GetComponent<CharacterController>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
+
         isGrounded = Physics.CheckSphere(groundCheck.position, checkRadius, whatIsGround);
         ControlAll();
     }
@@ -40,6 +43,7 @@ public class CharacterMovement : MonoBehaviour
     void ControlAll()
     {
         Movement();
+        AnimationHandler();
     }
 
     void Movement()
@@ -72,6 +76,12 @@ public class CharacterMovement : MonoBehaviour
 
         fallVelocity.y += gravity * Time.deltaTime;
         controller.Move(fallVelocity * Time.deltaTime);
+    }
+
+    void AnimationHandler()
+    {
+        float currentVelocity = moveVelocity.magnitude;
+        animator.SetFloat("velocity", currentVelocity);
     }
 
 

@@ -6,10 +6,13 @@ using UnityEngine;
 public class Shooting : MonoBehaviour
 {
     PlayerManager playerManager;
-
+    CharacterMovement characterMovement;
+    [SerializeField]
+    Animator handAnimator;
 
     public float coolDownTime;
     float coolTimer;
+    float velocity;
 
     public float rayDistance;
     public float damage;
@@ -18,6 +21,7 @@ public class Shooting : MonoBehaviour
     void Start()
     {
         playerManager = GetComponent<PlayerManager>();
+        handAnimator = Camera.main.GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -25,6 +29,8 @@ public class Shooting : MonoBehaviour
     {
         if (!playerManager.pause)
         {
+            
+
             if (coolTimer > 0)
             {
                 coolTimer -= Time.deltaTime;
@@ -48,6 +54,7 @@ public class Shooting : MonoBehaviour
 
     void Shoot()
     {
+        handAnimator.SetTrigger("Shoot");
         Vector3 rayOrigin = Camera.main.ViewportToWorldPoint(new Vector3(.5f, .5f, 0f));
         RaycastHit hit;
 
