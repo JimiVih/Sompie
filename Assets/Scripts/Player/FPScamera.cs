@@ -22,14 +22,8 @@ public class FPScamera : MonoBehaviour
     {
         playerManager = GetComponentInParent<PlayerManager>();
         _camera = Camera.main;
-        if (!playerManager.pause)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-        else if (playerManager.pause)
-        {
-            Cursor.lockState = CursorLockMode.None;
-        }
+
+
         
     }
 
