@@ -6,18 +6,24 @@ public class HealthManager : MonoBehaviour
 {
     [SerializeField]
     float health = 100;
+    public AudioSource HitAudio;
 
-    bool isPlayer;
-    bool isEnemy;
+    public bool isPlayer;
+    public bool isEnemy;
     public bool isDead;
 
     private void Start()
     {
+        HitAudio = GetComponent<AudioSource>();
         isDead = false;
     }
 
     public void DoDamage(float damageAmount)
     {
+        if (isEnemy)
+        {
+            HitAudio.Play();
+        }
         if (!isDead && health > 0)
         {
              health -= damageAmount;

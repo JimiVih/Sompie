@@ -9,6 +9,7 @@ public class Shooting : MonoBehaviour
     CharacterMovement characterMovement;
     [SerializeField]
     Animator handAnimator;
+    public AudioSource pistolAudio;
 
     public float coolDownTime;
     float coolTimer;
@@ -27,6 +28,8 @@ public class Shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
+        
         if (!playerManager.pause)
         {
             
@@ -55,7 +58,8 @@ public class Shooting : MonoBehaviour
     void Shoot()
     {
         handAnimator.SetTrigger("Shoot");
-        Vector3 rayOrigin = Camera.main.ViewportToWorldPoint(new Vector3(.5f, .5f, 0f));
+        pistolAudio.Play();
+        Vector3 rayOrigin = Camera.main.ViewportToWorldPoint(new Vector3(.0f, .0f, 0f));
         RaycastHit hit;
 
         if (Physics.Raycast(rayOrigin, Camera.main.transform.forward, out hit, rayDistance))
