@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class HealthManager : MonoBehaviour
 {
+    [SerializeField]
     float health = 100;
 
     bool isPlayer;

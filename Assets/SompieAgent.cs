@@ -6,6 +6,7 @@ using UnityEngine.AI;
 public class SompieAgent : MonoBehaviour
 {
     HealthManager healthManager;
+    Animator animator;
 
     Transform eyes;
     Transform player;
@@ -25,10 +26,14 @@ public class SompieAgent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        animator = GetComponentInChildren<Animator>();
         healthManager = GetComponent<HealthManager>();
         player = GameObject.FindGameObjectWithTag("Player").transform;
         eyes = transform.Find("Eyes");
         agent = GetComponent<NavMeshAgent>();
+
+        int idle = Random.Range(1, 3);
+        animator.SetInteger("idle", idle);
     }
 
     // Update is called once per frame
@@ -74,7 +79,15 @@ public class SompieAgent : MonoBehaviour
                 agent.SetDestination(player.position);
             }
         }
+        AnimationHandler();
 
+    }
+
+    void AnimationHandler()
+    {
+        float currentVelocity = agent.velocity.magnitude;
+
+        animator.SetFloat("velocity", currentVelocity);
     }
 
     private void OnDrawGizmosSelected()
