@@ -7,6 +7,7 @@ public class Shooting : MonoBehaviour
 {
     PlayerManager playerManager;
     CharacterMovement characterMovement;
+    public collectible col;
     [SerializeField]
     public Animator pistolAnimation, konepistooliAnimation;
     public AudioSource gunAudio;
@@ -55,7 +56,10 @@ public class Shooting : MonoBehaviour
         }
 
         WeaponCycle();
-
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            PickItem();
+        }
 
     }
 
@@ -63,7 +67,8 @@ public class Shooting : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            coolDownTime = 1;
+            damage = 15;
+            coolDownTime = 1.5f;
             handgun = true;
             suomiKP = false;
             Pistol.gameObject.SetActive(true);
@@ -73,6 +78,7 @@ public class Shooting : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
+            damage = 5;
             coolDownTime = .2f;
             handgun = false;
             suomiKP = true;
@@ -106,6 +112,32 @@ public class Shooting : MonoBehaviour
 
 
                 print("Hit " + hit.transform.gameObject.name);
+            }
+        }
+    }
+
+    void PickItem()
+    {
+        Vector3 rayOrigin = Camera.main.ViewportToWorldPoint(new Vector3(.0f, .0f, 0f));
+        RaycastHit hit;
+
+        if (Physics.Raycast(rayOrigin, Camera.main.transform.forward, out hit, rayDistance))
+        {
+            Debug.Log(hit.transform.gameObject);
+            if (hit.transform.tag == "collect")
+            {
+                
+                GameObject collected = hit.transform.gameObject;
+
+                Destroy(collected);
+                col.collected += 1;
+
+                
+            }
+
+            if(hit.transform.tag == "car")
+            {
+                col.WinGame();
             }
         }
     }
