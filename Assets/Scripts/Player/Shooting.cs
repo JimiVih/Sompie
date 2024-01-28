@@ -8,8 +8,11 @@ public class Shooting : MonoBehaviour
     PlayerManager playerManager;
     CharacterMovement characterMovement;
     [SerializeField]
-    Animator handAnimator;
-    public AudioSource pistolAudio;
+    public Animator pistolAnimation, konepistooliAnimation;
+    public AudioSource gunAudio;
+    public AudioClip pistolClip, konepistooliClip;
+
+    public Transform Pistol, konepistooli;
 
     public float coolDownTime;
     float coolTimer;
@@ -17,12 +20,17 @@ public class Shooting : MonoBehaviour
 
     public float rayDistance;
     public float damage;
+
+    bool suomiKP;
+    bool handgun;
+
     
     // Start is called before the first frame update
     void Start()
     {
         playerManager = GetComponent<PlayerManager>();
-        handAnimator = Camera.main.GetComponentInChildren<Animator>();
+        handgun = true;
+        suomiKP = false;
     }
 
     // Update is called once per frame
@@ -39,26 +47,53 @@ public class Shooting : MonoBehaviour
                 coolTimer -= Time.deltaTime;
             }
 
-            if (coolTimer <= 0 && Input.GetMouseButtonDown(0))
+            if (coolTimer <= 0 && Input.GetMouseButton(0))
             {
                 coolTimer = coolDownTime;
                 Shoot();
             }
         }
 
+        WeaponCycle();
 
 
     }
 
     void WeaponCycle()
     {
-        //weapons array
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            coolDownTime = 1;
+            handgun = true;
+            suomiKP = false;
+            Pistol.gameObject.SetActive(true);
+            konepistooli.gameObject.SetActive(false);
+            gunAudio.clip = pistolClip;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            coolDownTime = .2f;
+            handgun = false;
+            suomiKP = true;
+            Pistol.gameObject.SetActive(false);
+            konepistooli.gameObject.SetActive(true);
+            gunAudio.clip = konepistooliClip;
+        }
     }
 
     void Shoot()
     {
-        handAnimator.SetTrigger("Shoot");
-        pistolAudio.Play();
+        if (handgun)
+        {
+            pistolAnimation.SetTrigger("Shoot");
+        }
+        else if(suomiKP)
+        {
+            konepistooliAnimation.SetTrigger("shoot");
+        }
+        
+        gunAudio.Play();
         Vector3 rayOrigin = Camera.main.ViewportToWorldPoint(new Vector3(.0f, .0f, 0f));
         RaycastHit hit;
 
